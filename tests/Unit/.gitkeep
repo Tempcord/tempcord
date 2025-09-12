@@ -1,0 +1,4 @@
+# Unit Tests
+
+This directory contains unit tests for individual classes and methods.
+Unit tests should be fast, isolated, and test a single unit of functionality.

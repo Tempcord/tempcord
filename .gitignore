@@ -1,0 +1,76 @@
+# Dependencies
+/vendor/
+/node_modules/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+/log/*.log
+/logs/*.log
+*.log
+
+# Cache and temporary files
+/cache/
+/.tempest/cache/
+/tmp/
+/temp/
+
+# Test coverage
+/coverage/
+/build/
+/.phpunit.cache
+clover.xml
+
+# Composer
+composer.phar
+/vendor/
+composer.lock
+
+# PHPUnit
+.phpunit.result.cache
+
+# PHP CS Fixer
+.php-cs-fixer.cache
+
+# PHPStan
+.phpstan.cache
+
+# Pest
+.pest/
+
+# Application specific
+/storage/
+/bootstrap/cache/
+
+# Documentation build
+/docs/_build/
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock

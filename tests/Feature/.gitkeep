@@ -1,0 +1,4 @@
+# Feature Tests
+
+This directory contains feature tests that test larger pieces of functionality.
+Feature tests may involve multiple classes and test the integration between components.
