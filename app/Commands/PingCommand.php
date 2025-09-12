@@ -1,6 +1,6 @@
 <?php
 
-namespace Bot\Commands;
+namespace App\Commands;
 
 use Ragnarok\Fenrir\Bitwise\Bitwise;
 use Ragnarok\Fenrir\Enums\InteractionCallbackType;
