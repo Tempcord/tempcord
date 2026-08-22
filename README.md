@@ -5,17 +5,17 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/tempcord/tempcord/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/tempcord/tempcord/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/tempcord/tempcord.svg?style=flat-square)](https://packagist.org/packages/tempcord/tempcord)
 
-A modern Discord bot framework for PHP built on top of [Tempest](https://tempestphp.com). Tempcord provides a clean, expressive API for building Discord bots with PHP 8.2+.
+A modern Discord bot framework for PHP built on top of [Tempest](https://tempestphp.com). Tempcord provides a clean, expressive API for building Discord bots with PHP 8.5+.
 
 ## Features
 
-- 🚀 **Modern PHP**: Built for PHP 8.2+ with full type safety
+- 🚀 **Modern PHP**: Built for PHP 8.5+ with full type safety
 - ⚡ **Tempest Integration**: Leverages the powerful Tempest framework
 - 🎯 **Discord API**: Full Discord API v10 support
 - 🔧 **Developer Friendly**: Intuitive API with excellent IDE support
 - 📦 **Composer Ready**: Easy installation and dependency management
 - 🧪 **Testing**: Built-in testing support with PHPUnit and Pest
-- 📚 **Well Documented**: Comprehensive documentation and examples
+- 📚 **Documented**: [Guides and an API reference](https://github.com/tempcord/framework/blob/master/docs/README.md) generated from the framework source
 
 ## Installation
 

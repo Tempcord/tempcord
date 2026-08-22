@@ -3,12 +3,13 @@
 declare(strict_types=1);
 
 use Tempcord\Logging\ConsoleLogChannel;
-use Tempest\Log\LogConfig;
+use Tempest\Log\Config\MultipleChannelsLogConfig;
 
-return new LogConfig(
+return new MultipleChannelsLogConfig(
     channels: [
         new ConsoleLogChannel(
             except: [],
         ),
     ],
+    prefix: null,
 );
