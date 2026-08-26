@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Commands;
 
-use Ragnarok\Fenrir\Bitwise\Bitwise;
-use Ragnarok\Fenrir\Enums\InteractionCallbackType;
-use Ragnarok\Fenrir\Enums\MessageFlag;
-use Ragnarok\Fenrir\Interaction\CommandInteraction;
-use Ragnarok\Fenrir\Interaction\Helpers\InteractionCallbackBuilder;
+use CyberWolf\Discord\Bitwise\Bitwise;
+use CyberWolf\Discord\Enums\InteractionCallbackType;
+use CyberWolf\Discord\Enums\MessageFlag;
+use CyberWolf\Discord\Interaction\CommandInteraction;
+use CyberWolf\Discord\Interaction\Helpers\InteractionCallbackBuilder;
 use Tempcord\Attributes\Command;
 use Tempcord\Attributes\Option;
 use Tempcord\AutoCompletes\ArrayAutocomplete;

@@ -19,166 +19,163 @@ A modern Discord bot framework for PHP built on top of [Tempest](https://tempest
 
 ## Installation
 
-You can create a new Tempcord project using Composer:
+Create a new Tempcord project with Composer:
 
 ```bash
 composer create-project tempcord/tempcord my-discord-bot
 cd my-discord-bot
 ```
 
-Or install it in an existing project:
-
-```bash
-composer require tempcord/tempcord
-```
-
 ## Quick Start
 
-### 1. Environment Setup
-
-Copy the example environment file and configure your Discord bot token:
+### 1. Run the setup wizard
 
 ```bash
-cp .env.example .env
+php tempcord init
 ```
 
-Edit `.env` and add your Discord bot token:
+`init` walks you through everything a first bot needs:
 
-```env
-DISCORD_TOKEN=your_bot_token_here
-```
+- 🔑 asks for your **bot token** (and writes it to `.env` for you)
+- ✅ **verifies** it against Discord and greets you by your bot's name
+- 🔗 prints a ready-to-use **invite link** so you can add the bot to a server
+- 🚀 offers to **register slash commands and boot** right away
 
-### 2. Create Your First Command
+> No token yet? Create an application at the
+> [Discord Developer Portal](https://discord.com/developers/applications),
+> open **Bot → Reset Token**, and paste it into the wizard.
 
-Create a simple ping command in `app/Commands/PingCommand.php`:
+### 2. Try it
+
+The starter project ships with a `/ping` command in `app/Commands/PingCommand.php`:
 
 ```php
 <?php
 
 namespace App\Commands;
 
+use CyberWolf\Discord\Interaction\CommandInteraction;
+use CyberWolf\Discord\Interaction\Helpers\InteractionCallbackBuilder;
+use CyberWolf\Discord\Enums\InteractionCallbackType;
 use Tempcord\Attributes\Command;
-use Tempcord\Attributes\Description;
-use Tempcord\Discord\Interaction;
 
-#[Command('ping')]
-class PingCommand
+#[Command(description: 'Ping? Pong!')]
+final readonly class PingCommand
 {
-    public function handle(Interaction $interaction): void
+    public function __invoke(CommandInteraction $interaction): void
     {
-        $interaction->reply('🏓 Pong!');
+        $interaction->createInteractionResponse(
+            InteractionCallbackBuilder::new()
+                ->setContent('Pong!')
+                ->setType(InteractionCallbackType::CHANNEL_MESSAGE_WITH_SOURCE),
+        );
     }
 }
 ```
 
-### 3. Run Your Bot
+Invite the bot, then type `/ping` in your server.
+
+### 3. Start the bot any time
 
 ```bash
-php tempcord boot
+php tempcord boot --register   # register slash commands, then run
+php tempcord boot              # run only
 ```
+
+Prefer to skip the wizard? Copy `.env.example` to `.env`, set `DISCORD_TOKEN`,
+and run `php tempcord boot --register`.
 
 ## Usage Examples
 
-### Slash Commands
+### Slash commands
+
+Options are declared as typed parameters. Add `#[Option]` for a description and
+constraints; Discord builds the picker from them.
 
 ```php
 <?php
 
 namespace App\Commands;
 
+use CyberWolf\Discord\Interaction\CommandInteraction;
+use CyberWolf\Discord\Interaction\Helpers\InteractionCallbackBuilder;
+use CyberWolf\Discord\Enums\InteractionCallbackType;
 use Tempcord\Attributes\Command;
-use Tempcord\Attributes\Description;
 use Tempcord\Attributes\Option;
-use Tempcord\Discord\Interaction;
-use Tempcord\Enums\OptionType;
 
-class GreetCommand
+#[Command(description: 'Greet a user')]
+final readonly class GreetCommand
 {
-    #[Command('greet')]
-    #[Description('Greet a user')]
-    #[Option('user', OptionType::USER, 'The user to greet', required: true)]
-    #[Option('message', OptionType::STRING, 'Custom greeting message')]
-    public function handle(Interaction $interaction): void
-    {
-        $user = $interaction->getOption('user');
-        $message = $interaction->getOption('message') ?? 'Hello';
-        
-        $interaction->reply("{$message}, {$user->mention()}!");
+    public function __invoke(
+        CommandInteraction $interaction,
+        #[Option(description: 'Who to greet')]
+        ?string $name = null,
+    ): void {
+        $interaction->createInteractionResponse(
+            InteractionCallbackBuilder::new()
+                ->setContent('Hello, ' . ($name ?? 'world') . '!')
+                ->setType(InteractionCallbackType::CHANNEL_MESSAGE_WITH_SOURCE),
+        );
     }
 }
 ```
 
-### Event Listeners
+### Event listeners
+
+An invokable class with `#[Event]` listens to a gateway event. The payload arrives
+as the single argument, and the class is resolved from the container — so it can take
+constructor dependencies such as the Discord client.
 
 ```php
 <?php
 
 namespace App\Listeners;
 
-use Tempcord\Attributes\EventListener;
-use Tempcord\Events\MessageCreate;
+use CyberWolf\Discord\Constants\Events;
+use CyberWolf\Discord\Gateway\Events\MessageCreate;
+use Tempcord\Attributes\Event;
 
-class MessageListener
+#[Event(name: Events::MESSAGE_CREATE)]
+final readonly class MessageLogger
 {
-    #[EventListener]
-    public function onMessageCreate(MessageCreate $event): void
+    public function __invoke(MessageCreate $message): void
     {
-        $message = $event->message;
-        
         if ($message->content === '!hello') {
-            $message->reply('Hello there!');
+            // handle the message
         }
     }
 }
 ```
 
-### Middleware
-
-```php
-<?php
-
-namespace App\Middleware;
-
-use Tempcord\Attributes\Middleware;
-use Tempcord\Discord\Interaction;
-use Tempcord\Middleware\MiddlewareInterface;
-
-#[Middleware]
-class AdminOnlyMiddleware implements MiddlewareInterface
-{
-    public function handle(Interaction $interaction, callable $next): mixed
-    {
-        if (!$interaction->member->hasPermission('ADMINISTRATOR')) {
-            $interaction->reply('❌ This command requires administrator permissions.');
-            return;
-        }
-        
-        return $next($interaction);
-    }
-}
-```
+> A listener only fires for events your bot has the intent for — set intents in
+> `app/config/tempcord.config.php`. `MESSAGE_CONTENT` is privileged and must also
+> be enabled in the Discord developer portal.
 
 ## Configuration
 
-Tempcord uses a simple configuration system. You can customize your bot's behavior in `app/config/tempcord.config.php`:
+Your bot is configured in `app/config/tempcord.config.php`:
 
 ```php
 <?php
 
-use Tempcord\Config\TempcordConfig;
+use CyberWolf\Discord\Bitwise\Bitwise;
+use CyberWolf\Discord\Enums\Intent;
+use Tempcord\TempcordConfig;
+
+use function Tempest\env;
 
 return new TempcordConfig(
-    token: env('DISCORD_TOKEN'),
-    clientId: env('DISCORD_CLIENT_ID'),
-    intents: [
-        'GUILDS',
-        'GUILD_MESSAGES',
-        'MESSAGE_CONTENT',
-    ],
-    commandPrefix: '!',
-    autoRegisterCommands: true,
+    token: env('DISCORD_TOKEN') ?? '',
+    intents: Bitwise::from(
+        Intent::GUILDS,
+        Intent::GUILD_MESSAGES,
+        Intent::MESSAGE_CONTENT,
+    ),
 );
 ```
+
+More advanced topics — subcommands, autocomplete, localization and plugins — are
+covered in the [framework guides](https://github.com/tempcord/framework/blob/master/docs/README.md).
 
 ## Testing
 

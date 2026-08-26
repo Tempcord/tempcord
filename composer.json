@@ -50,7 +50,8 @@
         "analyse": "phpstan analyse",
         "format": "php-cs-fixer fix",
         "post-create-project-cmd": [
-            "@php -r \"copy('.env.example', '.env');\""
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
+            "@php -r \"echo PHP_EOL.'  🐺  Tempcord is ready!'.PHP_EOL.'  Run:  php tempcord init   to connect your bot and go live.'.PHP_EOL.PHP_EOL;\""
         ]
     },
     "config": {

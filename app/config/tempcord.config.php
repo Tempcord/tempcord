@@ -2,16 +2,19 @@
 
 declare(strict_types=1);
 
-use Ragnarok\Fenrir\Bitwise\Bitwise;
-use Ragnarok\Fenrir\Enums\Intent;
+use CyberWolf\Discord\Bitwise\Bitwise;
+use CyberWolf\Discord\Enums\Intent;
 use Tempcord\TempcordConfig;
 
 use function Tempest\env;
 
 return new TempcordConfig(
-    token: env('DISCORD_TOKEN') ?? throw new RuntimeException(
-        'DISCORD_TOKEN is not set. Copy .env.example to .env and add your bot token.',
-    ),
+    /**
+     * Your bot token. Leave it in .env (never commit it). Run `php tempcord init`
+     * for a guided setup, or copy .env.example to .env and fill it in yourself.
+     * The bot only fails to boot — not to load — when this is empty.
+     */
+    token: env('DISCORD_TOKEN') ?? '',
 
     /**
      * Discord only sends the events you subscribe to. Add the intents your bot
