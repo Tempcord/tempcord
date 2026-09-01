@@ -27,7 +27,7 @@
     },
     "require": {
         "php": "^8.5",
-        "tempcord/framework": "^0.7"
+        "tempcord/framework": "^0.8"
     },
     "require-dev": {
         "phpunit/phpunit": "^13.0",

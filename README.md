@@ -10,8 +10,10 @@ A modern Discord bot framework for PHP built on top of [Tempest](https://tempest
 ## Features
 
 - 🚀 **Modern PHP**: Built for PHP 8.5+ with full type safety
+- 🧩 **Components**: Buttons, select menus and modals routed by custom id
 - ⚡ **Tempest Integration**: Leverages the powerful Tempest framework
 - 🎯 **Discord API**: Full Discord API v10 support
+- 🗃️ **Gateway cache**: Guilds, channels, roles, members and voice states, read without a round trip
 - 🔧 **Developer Friendly**: Intuitive API with excellent IDE support
 - 📦 **Composer Ready**: Easy installation and dependency management
 - 🧪 **Testing**: Built-in testing support with PHPUnit and Pest
@@ -54,9 +56,7 @@ The starter project ships with a `/ping` command in `app/Commands/PingCommand.ph
 
 namespace App\Commands;
 
-use CyberWolf\Discord\Interaction\CommandInteraction;
-use CyberWolf\Discord\Interaction\Helpers\InteractionCallbackBuilder;
-use CyberWolf\Discord\Enums\InteractionCallbackType;
+use Tempcord\Discord\Interaction\CommandInteraction;
 use Tempcord\Attributes\Command;
 
 #[Command(description: 'Ping? Pong!')]
@@ -64,11 +64,7 @@ final readonly class PingCommand
 {
     public function __invoke(CommandInteraction $interaction): void
     {
-        $interaction->createInteractionResponse(
-            InteractionCallbackBuilder::new()
-                ->setContent('Pong!')
-                ->setType(InteractionCallbackType::CHANNEL_MESSAGE_WITH_SOURCE),
-        );
+        $interaction->reply('Pong!');
     }
 }
 ```
@@ -97,9 +93,7 @@ constraints; Discord builds the picker from them.
 
 namespace App\Commands;
 
-use CyberWolf\Discord\Interaction\CommandInteraction;
-use CyberWolf\Discord\Interaction\Helpers\InteractionCallbackBuilder;
-use CyberWolf\Discord\Enums\InteractionCallbackType;
+use Tempcord\Discord\Interaction\CommandInteraction;
 use Tempcord\Attributes\Command;
 use Tempcord\Attributes\Option;
 
@@ -111,11 +105,7 @@ final readonly class GreetCommand
         #[Option(description: 'Who to greet')]
         ?string $name = null,
     ): void {
-        $interaction->createInteractionResponse(
-            InteractionCallbackBuilder::new()
-                ->setContent('Hello, ' . ($name ?? 'world') . '!')
-                ->setType(InteractionCallbackType::CHANNEL_MESSAGE_WITH_SOURCE),
-        );
+        $interaction->reply('Hello, ' . ($name ?? 'world') . '!');
     }
 }
 ```
@@ -131,8 +121,8 @@ constructor dependencies such as the Discord client.
 
 namespace App\Listeners;
 
-use CyberWolf\Discord\Constants\Events;
-use CyberWolf\Discord\Gateway\Events\MessageCreate;
+use Tempcord\Discord\Constants\Events;
+use Tempcord\Discord\Gateway\Events\MessageCreate;
 use Tempcord\Attributes\Event;
 
 #[Event(name: Events::MESSAGE_CREATE)]
@@ -151,6 +141,103 @@ final readonly class MessageLogger
 > `app/config/tempcord.config.php`. `MESSAGE_CONTENT` is privileged and must also
 > be enabled in the Discord developer portal.
 
+### Buttons, select menus and modals
+
+`#[Button]`, `#[SelectMenu]` and `#[ModalSubmit]` route a component back to the code
+that answers it. Discord hands back nothing but the custom id, so anything the handler
+needs to know travels inside it as a `{placeholder}`:
+
+```php
+<?php
+
+namespace App\Components;
+
+use Tempcord\Discord\Interaction\ButtonInteraction;
+use Tempcord\Attributes\Button;
+
+#[Button(id: WaveButton::CUSTOM_ID)]
+final readonly class WaveButton
+{
+    public const string CUSTOM_ID = 'wave.back.{name}';
+
+    public function __invoke(ButtonInteraction $interaction, string $name): void
+    {
+        $interaction->update($name . ' waved back 👋');
+    }
+}
+```
+
+Build a matching id from the same pattern when you create the button, so the two cannot
+drift apart:
+
+```php
+use Tempcord\Runtime\CustomId;
+
+new PrimaryButton(
+    customId: CustomId::compile(WaveButton::CUSTOM_ID)->build(['name' => $name]),
+    label: 'Wave back',
+);
+```
+
+The starter ships both halves in `app/Commands/WaveCommand.php` and
+`app/Components/WaveButton.php` — invite the bot and run `/wave`.
+
+### Answering an interaction
+
+Every interaction takes a reply directly. Text, an embed, or a fully built response when
+you need more:
+
+```php
+$interaction->reply('Pong!');
+$interaction->reply($embed, ephemeral: true);  // only the person who triggered it sees it
+$interaction->update($embed);                  // replaces the message a component sits on
+$interaction->showModal($modal);
+$interaction->defer();                         // then editReply() once the work is done
+$interaction->followUp('and one more thing');
+```
+
+Components go on without building the tree by hand — `addButton()` fills a row five at a
+time, `addRow()` groups deliberately:
+
+```php
+$interaction->reply(
+    Response::message('Pick one')->addButton($accept)->addButton($reject),
+);
+```
+
+`Response::message()`, `::ephemeral()`, `::update()`, `::modal()` and `::defer()` return
+the underlying builder for anything they do not cover.
+
+### Suggesting values
+
+An option can suggest values while the user is still typing. The lightest way is a method
+on the command itself:
+
+```php
+#[Autocomplete(option: 'track')]
+public function completeTrack(string $typed): array
+{
+    return $this->tracks->matching($typed);
+}
+```
+
+For suggestions more than one command wants, name a class implementing `Autocomplete` —
+it is built by the container, so it may take dependencies of its own.
+
+### Reading what the gateway knows
+
+The Discord library keeps no state, so without a cache every role check is an HTTP round
+trip. Ask the container for `Tempcord\Cache\Cache` and read guilds, channels, roles,
+members and voice states straight out of memory:
+
+```php
+$member = $this->cache->member($guildId, $userId);
+$blocked = in_array($blockedRoleId, $member?->roles ?? [], true);
+```
+
+Reads never touch the network, so a miss returns null rather than quietly becoming a
+rate-limited request inside a loop.
+
 ## Configuration
 
 Your bot is configured in `app/config/tempcord.config.php`:
@@ -158,8 +245,8 @@ Your bot is configured in `app/config/tempcord.config.php`:
 ```php
 <?php
 
-use CyberWolf\Discord\Bitwise\Bitwise;
-use CyberWolf\Discord\Enums\Intent;
+use Tempcord\Discord\Bitwise\Bitwise;
+use Tempcord\Discord\Enums\Intent;
 use Tempcord\TempcordConfig;
 
 use function Tempest\env;

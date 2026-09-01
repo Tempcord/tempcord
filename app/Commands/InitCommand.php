@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Commands;
 
-use CyberWolf\Discord\Discord;
+use Tempcord\Discord\Discord;
 use Tempest\Console\Console;
 use Tempest\Console\ConsoleArgument;
 use Tempest\Console\ConsoleCommand;

@@ -4,30 +4,21 @@
          bootstrap="vendor/autoload.php"
          colors="true"
          cacheDirectory=".phpunit.cache"
-         executionOrder="depends,defects"
-         beStrictAboutOutputDuringTests="true"
-         failOnRisky="true"
-         failOnWarning="true">
+         failOnWarning="true"
+         failOnNotice="true"
+         failOnDeprecation="true"
+         failOnRisky="true">
     <testsuites>
         <testsuite name="Unit">
-            <directory suffix="Test.php">./tests/Unit</directory>
+            <directory>tests/Unit</directory>
         </testsuite>
         <testsuite name="Feature">
-            <directory suffix="Test.php">./tests/Feature</directory>
+            <directory>tests/Feature</directory>
         </testsuite>
     </testsuites>
     <source>
         <include>
-            <directory suffix=".php">./src</directory>
+            <directory>app</directory>
         </include>
     </source>
-    <coverage>
-        <report>
-            <html outputDirectory="coverage-html"/>
-            <clover outputFile="coverage.xml"/>
-        </report>
-    </coverage>
-    <logging>
-        <junit outputFile="junit.xml"/>
-    </logging>
 </phpunit>

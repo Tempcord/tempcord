@@ -31,6 +31,7 @@ Thumbs.db
 # Cache and temporary files
 /cache/
 /.tempest/cache/
+/.tempcord/
 /tmp/
 /temp/
 
