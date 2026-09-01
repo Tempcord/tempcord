@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Commands;
 
-use CyberWolf\Discord\Interaction\CommandInteraction;
+use Tempcord\Discord\Interaction\CommandInteraction;
 use Tempcord\Attributes\Command;
 use Tempcord\Attributes\Option;
 use Tempcord\AutoCompletes\ArrayAutocomplete;
@@ -22,8 +22,9 @@ final readonly class PingCommand
         #[Option(description: 'How many times?', minValue: 1, maxValue: 5)]
         int $times = 1,
     ): void {
-        $interaction->replyEphemeral(
+        $interaction->reply(
             trim(str_repeat('Ping, ' . ($user ?? 'world') . '! ', $times)),
+            ephemeral: true,
         );
     }
 }

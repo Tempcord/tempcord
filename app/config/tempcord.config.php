@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use CyberWolf\Discord\Bitwise\Bitwise;
-use CyberWolf\Discord\Enums\Intent;
+use Tempcord\Discord\Bitwise\Bitwise;
+use Tempcord\Discord\Enums\Intent;
 use Tempcord\TempcordConfig;
 
 use function Tempest\env;

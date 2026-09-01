@@ -56,7 +56,7 @@ The starter project ships with a `/ping` command in `app/Commands/PingCommand.ph
 
 namespace App\Commands;
 
-use CyberWolf\Discord\Interaction\CommandInteraction;
+use Tempcord\Discord\Interaction\CommandInteraction;
 use Tempcord\Attributes\Command;
 
 #[Command(description: 'Ping? Pong!')]
@@ -93,7 +93,7 @@ constraints; Discord builds the picker from them.
 
 namespace App\Commands;
 
-use CyberWolf\Discord\Interaction\CommandInteraction;
+use Tempcord\Discord\Interaction\CommandInteraction;
 use Tempcord\Attributes\Command;
 use Tempcord\Attributes\Option;
 
@@ -121,8 +121,8 @@ constructor dependencies such as the Discord client.
 
 namespace App\Listeners;
 
-use CyberWolf\Discord\Constants\Events;
-use CyberWolf\Discord\Gateway\Events\MessageCreate;
+use Tempcord\Discord\Constants\Events;
+use Tempcord\Discord\Gateway\Events\MessageCreate;
 use Tempcord\Attributes\Event;
 
 #[Event(name: Events::MESSAGE_CREATE)]
@@ -152,7 +152,7 @@ needs to know travels inside it as a `{placeholder}`:
 
 namespace App\Components;
 
-use CyberWolf\Discord\Interaction\ButtonInteraction;
+use Tempcord\Discord\Interaction\ButtonInteraction;
 use Tempcord\Attributes\Button;
 
 #[Button(id: WaveButton::CUSTOM_ID)]
@@ -189,15 +189,24 @@ you need more:
 
 ```php
 $interaction->reply('Pong!');
-$interaction->replyEphemeral($embed);   // only the person who triggered it
-$interaction->update($embed);           // replaces the message a component sits on
+$interaction->reply($embed, ephemeral: true);  // only the person who triggered it sees it
+$interaction->update($embed);                  // replaces the message a component sits on
 $interaction->showModal($modal);
-$interaction->defer();                  // then editReply() when the work is done
+$interaction->defer();                         // then editReply() once the work is done
 $interaction->followUp('and one more thing');
 ```
 
+Components go on without building the tree by hand — `addButton()` fills a row five at a
+time, `addRow()` groups deliberately:
+
+```php
+$interaction->reply(
+    Response::message('Pick one')->addButton($accept)->addButton($reject),
+);
+```
+
 `Response::message()`, `::ephemeral()`, `::update()`, `::modal()` and `::defer()` return
-the underlying builder for anything they do not cover, such as attaching components.
+the underlying builder for anything they do not cover.
 
 ### Suggesting values
 
@@ -236,8 +245,8 @@ Your bot is configured in `app/config/tempcord.config.php`:
 ```php
 <?php
 
-use CyberWolf\Discord\Bitwise\Bitwise;
-use CyberWolf\Discord\Enums\Intent;
+use Tempcord\Discord\Bitwise\Bitwise;
+use Tempcord\Discord\Enums\Intent;
 use Tempcord\TempcordConfig;
 
 use function Tempest\env;

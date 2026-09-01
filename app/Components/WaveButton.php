@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Components;
 
-use CyberWolf\Discord\Interaction\ButtonInteraction;
+use Tempcord\Discord\Interaction\ButtonInteraction;
 use Tempcord\Attributes\Button;
 
 /**

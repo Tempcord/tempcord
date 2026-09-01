@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace App\Commands;
 
 use App\Components\WaveButton;
-use CyberWolf\Discord\Component\Button\PrimaryButton;
-use CyberWolf\Discord\Interaction\CommandInteraction;
-use CyberWolf\Discord\Interaction\Response;
-use CyberWolf\Discord\Rest\Helpers\Channel\ComponentBuilder;
-use CyberWolf\Discord\Rest\Helpers\Channel\ComponentRowBuilder;
+use Tempcord\Discord\Component\Button\PrimaryButton;
+use Tempcord\Discord\Interaction\CommandInteraction;
+use Tempcord\Discord\Interaction\Response;
 use Tempcord\Attributes\Command;
 use Tempcord\Attributes\Option;
 use Tempcord\Runtime\CustomId;
@@ -34,10 +32,7 @@ final readonly class WaveCommand
         );
 
         $interaction->reply(
-            Response::message('Waving at ' . $name . ' 👋')
-                ->setComponents(new ComponentBuilder()->addRow(
-                    new ComponentRowBuilder()->add($button),
-                )),
+            Response::message('Waving at ' . $name . ' 👋')->addButton($button),
         );
     }
 }
