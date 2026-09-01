@@ -4,11 +4,7 @@ declare(strict_types=1);
 
 namespace App\Commands;
 
-use CyberWolf\Discord\Bitwise\Bitwise;
-use CyberWolf\Discord\Enums\InteractionCallbackType;
-use CyberWolf\Discord\Enums\MessageFlag;
 use CyberWolf\Discord\Interaction\CommandInteraction;
-use CyberWolf\Discord\Interaction\Helpers\InteractionCallbackBuilder;
 use Tempcord\Attributes\Command;
 use Tempcord\Attributes\Option;
 use Tempcord\AutoCompletes\ArrayAutocomplete;
@@ -26,11 +22,8 @@ final readonly class PingCommand
         #[Option(description: 'How many times?', minValue: 1, maxValue: 5)]
         int $times = 1,
     ): void {
-        $interaction->createInteractionResponse(
-            InteractionCallbackBuilder::new()
-                ->setContent(trim(str_repeat('Ping, ' . ($user ?? 'world') . '! ', $times)))
-                ->setType(InteractionCallbackType::CHANNEL_MESSAGE_WITH_SOURCE)
-                ->setFlags(Bitwise::from(MessageFlag::EPHEMERAL)->get()),
+        $interaction->replyEphemeral(
+            trim(str_repeat('Ping, ' . ($user ?? 'world') . '! ', $times)),
         );
     }
 }
