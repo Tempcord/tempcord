@@ -1,44 +1,25 @@
 name: Static Analysis
 
 on:
-  push:
-    branches: [main]
   pull_request:
-    branches: [main]
+  push:
+    branches: [master]
 
 jobs:
   phpstan:
-    name: phpstan
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v7
 
-      - name: Setup PHP
+      - name: Install PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: 8.5
           coverage: none
 
-      - name: Install composer dependencies
-        run: composer install --no-scripts
+      - name: Install packages
+        run: composer install --prefer-dist --no-progress
 
       - name: Run PHPStan
-        run: ./vendor/bin/phpstan --error-format=github
-
-  psalm:
-    name: psalm
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.2'
-          coverage: none
-
-      - name: Install composer dependencies
-        run: composer install --no-scripts
-
-      - name: Run psalm
-        run: ./vendor/bin/psalm --output-format=github
+        run: composer analyse

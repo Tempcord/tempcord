@@ -1,8 +1,8 @@
 # Tempcord
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/tempcord/tempcord.svg?style=flat-square)](https://packagist.org/packages/tempcord/tempcord)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/tempcord/tempcord/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/tempcord/tempcord/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/tempcord/tempcord/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/tempcord/tempcord/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/tempcord/tempcord/run-tests.yml?branch=master&label=tests&style=flat-square)](https://github.com/tempcord/tempcord/actions?query=workflow%3ATests+branch%3Amaster)
+[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/tempcord/tempcord/fix-php-code-style-issues.yml?branch=master&label=code%20style&style=flat-square)](https://github.com/tempcord/tempcord/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amaster)
 [![Total Downloads](https://img.shields.io/packagist/dt/tempcord/tempcord.svg?style=flat-square)](https://packagist.org/packages/tempcord/tempcord)
 
 A modern Discord bot framework for PHP built on top of [Tempest](https://tempestphp.com). Tempcord provides a clean, expressive API for building Discord bots with PHP 8.5+.

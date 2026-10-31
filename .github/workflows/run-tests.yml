@@ -1,44 +1,25 @@
-name: run-tests
+name: Tests
 
 on:
-  push:
-    branches: [main]
   pull_request:
-    branches: [main]
+  push:
+    branches: [master]
 
 jobs:
-  test:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: true
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-        php: [8.2, 8.3]
-        stability: [prefer-lowest, prefer-stable]
-
-    name: P${{ matrix.php }} - ${{ matrix.stability }} - ${{ matrix.os }}
+  tests:
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v7
+      - uses: actions/checkout@v7
 
-      - name: Setup PHP
+      - name: Install PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php }}
-          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
+          php-version: 8.5
           coverage: none
 
-      - name: Setup problem matchers
-        run: |
-          echo "::add-matcher::${{ runner.tool_cache }}/php.json"
-          echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+      - name: Install packages
+        run: composer install --prefer-dist --no-progress
 
-      - name: Install dependencies
-        run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction
-
-      - name: List Installed Dependencies
-        run: composer show -D
-
-      - name: Execute tests
-        run: vendor/bin/phpunit
+      - name: Run tests
+        run: composer test
