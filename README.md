@@ -57,7 +57,7 @@ The starter project ships with a `/ping` command in `app/Commands/PingCommand.ph
 namespace App\Commands;
 
 use Tempcord\Discord\Interaction\CommandInteraction;
-use Tempcord\Attributes\Command;
+use Tempcord\Declare\Command\Command;
 
 #[Command(description: 'Ping? Pong!')]
 final readonly class PingCommand
@@ -94,8 +94,8 @@ constraints; Discord builds the picker from them.
 namespace App\Commands;
 
 use Tempcord\Discord\Interaction\CommandInteraction;
-use Tempcord\Attributes\Command;
-use Tempcord\Attributes\Option;
+use Tempcord\Declare\Command\Command;
+use Tempcord\Declare\Command\Option;
 
 #[Command(description: 'Greet a user')]
 final readonly class GreetCommand
@@ -123,7 +123,7 @@ namespace App\Listeners;
 
 use Tempcord\Discord\Constants\Events;
 use Tempcord\Discord\Gateway\Events\MessageCreate;
-use Tempcord\Attributes\Event;
+use Tempcord\Declare\Event\Event;
 
 #[Event(name: Events::MESSAGE_CREATE)]
 final readonly class MessageLogger
@@ -153,7 +153,7 @@ needs to know travels inside it as a `{placeholder}`:
 namespace App\Components;
 
 use Tempcord\Discord\Interaction\ButtonInteraction;
-use Tempcord\Attributes\Button;
+use Tempcord\Declare\Component\Button;
 
 #[Button(id: WaveButton::CUSTOM_ID)]
 final readonly class WaveButton
@@ -171,7 +171,7 @@ Build a matching id from the same pattern when you create the button, so the two
 drift apart:
 
 ```php
-use Tempcord\Runtime\CustomId;
+use Tempcord\Compile\Component\CustomId;
 
 new PrimaryButton(
     customId: CustomId::compile(WaveButton::CUSTOM_ID)->build(['name' => $name]),
@@ -227,7 +227,7 @@ it is built by the container, so it may take dependencies of its own.
 ### Reading what the gateway knows
 
 The Discord library keeps no state, so without a cache every role check is an HTTP round
-trip. Ask the container for `Tempcord\Cache\Cache` and read guilds, channels, roles,
+trip. Ask the container for `Tempcord\Support\Cache\Cache` and read guilds, channels, roles,
 members and voice states straight out of memory:
 
 ```php

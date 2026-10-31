@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Commands;
 
 use Tempcord\Discord\Interaction\CommandInteraction;
-use Tempcord\Attributes\Command;
-use Tempcord\Attributes\Option;
-use Tempcord\AutoCompletes\ArrayAutocomplete;
+use Tempcord\Declare\Command\Command;
+use Tempcord\Declare\Command\Option;
+use Tempcord\Support\Autocomplete\ArrayAutocomplete;
 
 #[Command(description: 'Ping? Pong!')]
 final readonly class PingCommand

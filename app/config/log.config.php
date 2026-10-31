@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Tempcord\Logging\ConsoleLogChannel;
+use Tempcord\Support\Logging\ConsoleLogChannel;
 use Tempest\Log\Config\MultipleChannelsLogConfig;
 
 return new MultipleChannelsLogConfig(

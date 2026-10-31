@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Components;
 
 use Tempcord\Discord\Interaction\ButtonInteraction;
-use Tempcord\Attributes\Button;
+use Tempcord\Declare\Component\Button;
 
 /**
  * Answers the button /wave posts.

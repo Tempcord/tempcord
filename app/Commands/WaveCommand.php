@@ -8,9 +8,9 @@ use App\Components\WaveButton;
 use Tempcord\Discord\Component\Button\PrimaryButton;
 use Tempcord\Discord\Interaction\CommandInteraction;
 use Tempcord\Discord\Interaction\Response;
-use Tempcord\Attributes\Command;
-use Tempcord\Attributes\Option;
-use Tempcord\Runtime\CustomId;
+use Tempcord\Declare\Command\Command;
+use Tempcord\Declare\Command\Option;
+use Tempcord\Compile\Component\CustomId;
 
 /**
  * Posts a button for someone to press.

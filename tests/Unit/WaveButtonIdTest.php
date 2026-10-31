@@ -6,7 +6,7 @@ namespace Tests\Unit;
 
 use App\Components\WaveButton;
 use PHPUnit\Framework\TestCase;
-use Tempcord\Runtime\CustomId;
+use Tempcord\Compile\Component\CustomId;
 
 /**
  * That /wave and the button answering it still agree on one custom id.
